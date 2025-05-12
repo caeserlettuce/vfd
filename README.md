@@ -132,7 +132,7 @@ if your VFD has more pins than just anode, grid, and cathode; good luck!
 <br>
 okay so now to the json file. let's go through the properties:
 
-```json
+```jsonc
 {   // as an example, im using the properties for my CM1564C.
     "CM1564C": {    // this is the name
         "address support": [
