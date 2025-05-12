@@ -11,18 +11,26 @@ display.clear()
 
 
 # pins = display.setText("àbcdéftt text éàçüö and more", False)              # simple set text on display
-
-pins = display.setText("WORLD", False)
-display.setPins(pins)
+# string = display.verifyText("WORLD")
+# pins = display.setText(string, False)
+# display.setPins(pins)
 # display.setPins("27:9")
 
+# display.setBrightness(3)
+
+string = display.verifyText("93", "side")
+
+scroll_list = vfd.scrollText(string, 2)
+print(scroll_list)
+pins = display.setText(string, False, "side")
+display.setPins(pins)
+
+print(str(pins).replace("'", '"'))
+
+# display.send()
 
 
-
-display.send()
-
-
-vfd.scrollText("hello world", 8)
+# vfd.scrollText("hello world", 8)
 
 
 

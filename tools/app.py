@@ -46,7 +46,7 @@ log.addFilter(NoPost())
 
 
 address_listing = []
-
+brightness = 0
 
 # THE STUFF
 
@@ -83,22 +83,26 @@ def route_home():
 def get_listing():
     global address_listing
     return_json = {
-        "listing": []
+        "listing": [],
+        "brightness": 0
     }
     
     return_json["listing"] = address_listing
+    return_json["brightness"] = brightness
 
     return jsonify(return_json)
 
 @app.route("/send_listing", methods=['GET', 'POST'])
 def send_listing():
     global address_listing
+    global brightness
     return_json = {
         "ja": "ja",
     }
     request_json = request.get_json()
     print(request_json)
     request_listing = request_json["listing"]
+    brightness = request_json["brightness"]
     
     address_listing = request_listing
 

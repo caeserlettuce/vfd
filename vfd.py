@@ -88,7 +88,8 @@ class VFD:
         else:
             raise Exception(bc.BOLD + bc.FAIL + "model must be set!" + bc.END)
         
-        self.addresses = [] #final pin address list
+        self.addresses = [] # final pin address list
+        self.brightness = displays[self.model]["max brightness"]
 
     def send(self):
         dprint("sending addresses:")
@@ -97,7 +98,10 @@ class VFD:
         try:
 
             headers = {'Content-Type': 'application/json'}
-            data = {"listing": self.addresses}
+            data = {
+                "listing": self.addresses,
+                "brightness": self.brightness
+            }
 
             response = requests.post(WEBAPP_URL + "/send_listing", data=json.dumps(data), headers=headers)
 
@@ -116,7 +120,16 @@ class VFD:
         self.addresses = []
 
         dprint(bc.BOLD + bc.WARNING + "DISPLAY CLEARED" + bc.END)
-        
+
+    def setBrightness(self, brightness):
+        if brightness > displays[self.model]["max brightness"] or brightness < 0:
+            print(bc.BOLD + bc.FAIL + "brightness level " + bc.END + bc.UNDERLINE + bc.WARNING + str(brightness) + bc.END + bc.BOLD + bc.FAIL + " is out of range!" + bc.END)
+        else:
+            self.brightness = brightness
+    
+    def getBrightness(self):
+        return self.brightness
+
     def getPins(self):
 
         addresses_return = json.dumps(self.addresses)
@@ -168,19 +181,20 @@ class VFD:
 
         grid_list = tmp_grid_list[:]
 
-        temp_address_list = self.addresses[:]
 
-        for p in temp_address_list:
+        addresses_out = []
+
+        for p in self.addresses:
             add_split = p.split(":")
-            if int(add_split[0]) in grid_list:
-                temp_address_list.remove(p)
+            if int(add_split[0]) not in grid_list:
+                addresses_out.append(p)
 
-        temp_address_list = list(set(temp_address_list))    # make sure there's no duplicated
+        addresses_out = list(set(addresses_out))    # make sure there's no duplicated
 
         if apply == True:
-            self.addresses = temp_address_list[:]
+            self.addresses = addresses_out[:]
         
-        return temp_address_list
+        return addresses_out
 
 
     def verifyText(self, text_in, font_in="default"):
@@ -188,16 +202,25 @@ class VFD:
         glyphs = displays[self.model]["fonts"][font_in]["glyphs"]
         replacements = displays[self.model]["fonts"][font_in]["replacements"]
 
+
+        if displays[self.model]["fonts"][font_in]["caps"] == True:
+            text_in = text_in.upper()
+
         for rp in replacements:
             text_in = text_in.replace(str(rp), str(replacements[rp]))
 
+
         text_flat = flatten_text(text_in)
 
+        font_length = len(displays[self.model]["fonts"][font_in]["grids"])
 
         text_split = list(text_in)
         text_flat_split = list(text_flat)
 
         index = 0
+        grid_index = 0
+        scroll_warned = False
+        
         for l in text_split:
             if l not in glyphs:
                 if text_flat_split[index] not in glyphs:
@@ -205,7 +228,34 @@ class VFD:
                     text_split[index] = "unknown"
                 else:
                     text_split[index] = text_flat_split[index]      # for unicode characters like éàçüö, they will be flattened down to eacuo. basically better legibility
+            
+            # grid check
+            
+            if grid_index < font_length:
+                add_grid = grids[grid_index]
+                glyph_good = True
+                for a in glyphs[l]:
+                    if str(add_grid) in displays[self.model]["fonts"][font_in]["missing"]:
+                        if int(a) in displays[self.model]["fonts"][font_in]["missing"][str(add_grid)]:
+                            glyph_good = False
+                            dprint("glyph " + l + " on grid " + str(add_grid) + " is not good!")
+
+                if glyph_good == False:
+                    text_split[index] = "unknown"
+                else:
+                    grid_index += 1
+            else:
+                if len(displays[self.model]["fonts"][font_in]["missing"]) > 0:
+                    text_split[index] = "unknown"
+                    if scroll_warned == False:
+                        print(bc.WARNING + "[verifyText]" + bc.BOLD + bc.FAIL + " scrolling is not supported on grid fonts with missing segments." + bc.END)
+                        scroll_warned = True
+
+
             index += 1
+
+
+
 
         temp_text_split = []
         for l in text_split:
