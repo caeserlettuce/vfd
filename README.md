@@ -30,6 +30,7 @@ dispay.getPins()                            # returns current pin address list
 display.clear()                             # clear all pins
 display.send()                              # sends pin address list to screen
 
+vfd.scrollText("hello world!", 8)           # creates a list of address lists, basically an animation of the text scrolling
 ```
 
 <br>
@@ -68,3 +69,11 @@ display.clearPins()
 
 clears the pin address list.
 
+<br>
+
+### scrollText()
+```python
+vfd.scrollText(text: str, length: int)
+```
+
+outputs a list of address lists, basically like an animation of the text scrolling. `length` is how many characters max can be displayed before scrolling

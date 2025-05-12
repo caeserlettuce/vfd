@@ -2,6 +2,7 @@ import json
 import sys
 import os
 import unicodedata
+import requests
 
 class bc:
     HEADER = '\033[95m'
@@ -14,7 +15,17 @@ class bc:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-displays = json.load(open('displays.json'.encode()))
+script_directory = os.path.dirname(os.path.abspath(__file__))
+
+displays = json.load(open(os.path.join(script_directory, 'displays.json').encode()))
+WEBAPP_DEBUG = True         # enable this when webapp debugging
+DEBUG_PRINT = False
+WEBAPP_URL = "http://127.0.0.1:5000"
+
+
+def dprint(input):
+    if DEBUG_PRINT == True:
+        print(input)
 
 def intj(str_in):
     try:
@@ -80,18 +91,36 @@ class VFD:
         self.addresses = [] #final pin address list
 
     def send(self):
-        print("sending addresses:")
-        print(self.addresses)
+        dprint("sending addresses:")
+        dprint(self.addresses)
+
+        try:
+
+            headers = {'Content-Type': 'application/json'}
+            data = {"listing": self.addresses}
+
+            response = requests.post(WEBAPP_URL + "/send_listing", data=json.dumps(data), headers=headers)
+
+            if response.status_code == 200:
+                response_data = response.json()
+                dprint(response_data)
+            else:
+                print(f"Error: {response.status_code}")
+
+        except Exception:
+            print(Exception)
         
-        print(bc.BOLD + bc.HEADER + "addresses sent!" + bc.END)
+        dprint(bc.BOLD + bc.HEADER + "addresses sent!" + bc.END)
 
     def clear(self):
         self.addresses = []
 
-        print(bc.BOLD + bc.WARNING + "DISPLAY CLEARED" + bc.END)
+        dprint(bc.BOLD + bc.WARNING + "DISPLAY CLEARED" + bc.END)
         
     def getPins(self):
-        return self.addresses
+
+        addresses_return = json.dumps(self.addresses)
+        return addresses_return
     
     def setPins(self, pin_list, apply=True):
         
@@ -154,19 +183,13 @@ class VFD:
         return temp_address_list
 
 
-    def setText(self, text_in, apply=True, font_in="default"):
-        
+    def verifyText(self, text_in, font_in="default"):
         grids = displays[self.model]["fonts"][font_in]["grids"]
         glyphs = displays[self.model]["fonts"][font_in]["glyphs"]
         replacements = displays[self.model]["fonts"][font_in]["replacements"]
-        
+
         for rp in replacements:
             text_in = text_in.replace(str(rp), str(replacements[rp]))
-
-        font_length = len(displays[self.model]["fonts"][font_in]["grids"])
-
-        if len(text_in) > font_length:
-            text_in = text_in[:font_length]
 
         text_flat = flatten_text(text_in)
 
@@ -178,13 +201,37 @@ class VFD:
         for l in text_split:
             if l not in glyphs:
                 if text_flat_split[index] not in glyphs:
-                    print( l + " is extra not in the glyphs!")
+                    dprint( l + " is extra not in the glyphs!")
                     text_split[index] = "unknown"
                 else:
                     text_split[index] = text_flat_split[index]      # for unicode characters like éàçüö, they will be flattened down to eacuo. basically better legibility
             index += 1
 
+        temp_text_split = []
+        for l in text_split:
+            if l != "unknown":
+                temp_text_split.append(l)
         
+        text_split = temp_text_split
+
+        text_out = "".join(text_split)
+
+        return text_out
+        
+
+
+    def setText(self, text_in, apply=True, font_in="default"):
+        
+        grids = displays[self.model]["fonts"][font_in]["grids"]
+        glyphs = displays[self.model]["fonts"][font_in]["glyphs"]
+        
+        font_length = len(displays[self.model]["fonts"][font_in]["grids"])
+
+        if len(text_in) > font_length:
+            text_in = text_in[:font_length]
+
+        text_split = list(text_in)
+
         address_list_out = []
         grid_index = 0
 
@@ -203,5 +250,26 @@ class VFD:
         return address_list_out
 
 
+def scrollText(text, length):
 
+    full_len = len(text)
+    if (full_len <= length):
+        text_list_out = []
+        text_list_out.append(text)
+        return text_list_out
+    
+    else:
+        frames = full_len - length + 1
 
+        text_list = list(text)
+        text_list_out = []
+
+        for i in range(frames):
+            # print(text_list[i:][:8])
+            text_list_out.append("".join(text_list[i:][:length]))
+
+        # print(text_list_out)
+        return text_list_out
+
+# 12345678901
+# hello world

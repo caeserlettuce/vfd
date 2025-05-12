@@ -5,26 +5,794 @@
     <title>visualizer</title>
 
     <style>
+
+      :root {
+        --toggle-background: #2b2b2b;
+        --toggle-thumb: #ffffff;
+        --toggle-background-enabled: #3783f5;
+        --button-bg: #1f61c3;
+        --button-bg-hover: #3577da;
+      }
+
       body {
         background-color: #1e1e1e;
         color: white;
+        margin: 0px !important;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
       }
 
       .vfd-svg {
         background-color: black;
-        padding: 1em;
+        /* padding: 1em; */
+        width: 100vw;
+        /* position: fixed; */
+        left: 0px;
+        top: 0px;
       }
+
+      .pa {
+        position: fixed;
+        left: 10px;
+        bottom: 10px;
+      }
+
+      image {
+        cursor: pointer;
+      }
+
+      image:not(.red) {
+        filter: hue-rotate(346deg);
+      }
+
+      g[pin][grid] {
+        transition-duration: 100ms;
+      }
+
+      g[pin][grid]:not(.active) {
+        filter: grayscale(1) brightness(0.1);
+        transition-duration: 250ms;
+      }
+
+
+      .toggle {
+        height: 1.75em;
+        cursor: pointer;
+      }
+      .toggle circle, .toggle rect {
+        transition-duration: 250ms;
+      }
+      .toggle .thumb {
+        fill: var(--toggle-thumb);
+        transform: translateX(0px);
+      }
+      .toggle.enabled .thumb {
+        transform: translateX(1px);
+      }
+      .toggle .background {
+        fill: var(--toggle-background);
+      }
+      .toggle.enabled .background {
+        fill: var(--toggle-background-enabled);
+      }
+
+      .toggle-wrapper {
+        margin-bottom: 0.5em;
+      }
+
+
+      .button {
+        width: fit-content;
+        background-color: var(--button-bg);
+        padding: 0.5em;
+        padding-left: 0.6em;
+        padding-right: 0.6em;
+        border-radius: 15px;
+        transition-duration: 250ms;
+        cursor: pointer;
+      }
+
+      .button:hover {
+        background-color: var(--button-bg-hover);
+      }
+
+
+      .codeblock {
+        background-color: #181818;
+        border: 1px solid #353535;
+        border-radius: 15px;
+        padding: 1em;
+        margin-right: 0.4em;
+        height: 87.2%;
+        width: 40em;
+        font-family: monospace !important;
+        overflow-y: scroll;
+        overflow-x: scroll;
+        color: white;
+        
+      }
+
+      ::-webkit-scrollbar {
+          width: 10px;
+          height: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+          background: #474747;
+          border-radius: 5px;
+      }
+      ::-webkit-scrollbar-corner {
+          background: transparent;
+      }
+
+      textarea {
+        resize: none;
+      }
+
+
+
+
+
+
 
     </style>
 
   </head>
   <body>
-    <h1 class="61">a quick thrown-together visualizer for CM1564C vfd</h1>
 
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 789 206" class="vfd-svg">
-      <image x="0" y="0" width="789" height="206" href="assets/template.png" />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7893 2062" class="vfd-svg">
+      <!-- <image x="0" y="0" width="7893" height="2062" href="assets/template.png" /> -->
+      <!-- <image x="-460" y="-1255" width="9104" height="3896" href="../pinout.png" /> -->
 
+      <g pin="18">
+        <g pin="5" grid="18" style="transform: translate(5772px, 440px)">
+          <image x="0" y="0" href="assets/18-5.png" class="red" /></g>
+        <g pin="6" grid="18" style="transform: translate(5640px, 440px)">
+          <image x="0" y="0" href="assets/18-6.png" class="red" /></g>
+        <g pin="7" grid="18" style="transform: translate(5157px, 440px)">
+          <image x="0" y="0" href="assets/18-7.png" class="red" /></g>
+        <g pin="8" grid="18" style="transform: translate(4692px, 440px)">
+          <image x="0" y="0" href="assets/18-8.png" /></g>
+        <g pin="9" grid="18" style="transform: translate(4480px, 446px)">
+          <image x="0" y="0" href="assets/18-9.png" /></g>
+        <g pin="10" grid="18" style="transform: translate(4353px, 440px)">
+          <image x="0" y="0" href="assets/18-10.png" /></g>
+        <g pin="11" grid="18" style="transform: translate(3895px, 440px)">
+          <image x="0" y="0" href="assets/18-11.png" /></g>
+        <g pin="12" grid="18" style="transform: translate(3375px, 449px)">
+          <image x="0" y="0" href="assets/18-12.png" /></g>
+        <g pin="13" grid="18" style="transform: translate(2684px, 452px)">
+          <image x="0" y="0" href="assets/18-13.png" /></g>
+        <g pin="14" grid="18" style="transform: translate(1932px, 459px)">
+          <image x="0" y="0" href="assets/18-14.png" class="red"/></g>
+        <g pin="15" grid="18" style="transform: translate(1720px, 460px)">
+          <image x="0" y="0" href="assets/18-15.png" /></g>
+        <g pin="16" grid="18" style="transform: translate(1610px, 460px)">
+          <image x="0" y="0" href="assets/18-16.png" /></g>
+        <g pin="17" grid="18" style="transform: translate(1000px, 460px)">
+          <image x="0" y="0" href="assets/18-17.png" /></g>
+
+      </g>
+
+      <g pin="19">
+
+        <g pin="4" grid="19" style="transform: translate(1080px, 1125px)">
+          <image x="0" y="0" href="assets/19-4.png"></g>
+        <g pin="5" grid="19" style="transform: translate(1231px, 1125px)">
+          <image x="0" y="0" href="assets/19-5.png"></g>
+        <g pin="6" grid="19" style="transform: translate(1170px, 1111px)">
+          <image x="0" y="0" href="assets/19-6.png"></g>
+        <g pin="7" grid="19" style="transform: translate(1118px, 895px)">
+          <image x="0" y="0" href="assets/19-7.png"></g>
+        <g pin="8" grid="19" style="transform: translate(1250px, 895px)">
+          <image x="0" y="0" href="assets/19-8.png"></g>
+        <g pin="9" grid="19" style="transform: translate(1192px, 902px)">
+          <image x="0" y="0" href="assets/19-9.png"></g>
+        <g pin="10" grid="19" style="transform: translate(1224px, 1071px)">
+          <image x="0" y="0" href="assets/19-10.png"></g>
+        <g pin="11" grid="19" style="transform: translate(1077px, 1071px)">
+          <image x="0" y="0" href="assets/19-11.png"></g>
+        <g pin="12" grid="19" style="transform: translate(1048px, 853px)">
+          <image x="0" y="0" href="assets/19-12.png"></g>
+        <g pin="13" grid="19" style="transform: translate(1018px, 1108px)">
+          <image x="0" y="0" href="assets/19-13.png"></g>
+        <g pin="14" grid="19" style="transform: translate(1030px, 1308px)">
+          <image x="0" y="0" href="assets/19-14.png"></g>
+        <g pin="15" grid="19" style="transform: translate(1311px, 1107px)">
+          <image x="0" y="0" href="assets/19-15.png"></g>
+        <g pin="16" grid="19" style="transform: translate(1335px, 854px)">
+          <image x="0" y="0" href="assets/19-16.png"></g>
+        <g pin="17" grid="19" style="transform: translate(1085px, 832px)">
+          <image x="0" y="0" href="assets/19-17.png"></g>
+
+      </g>
+      <g pin="20" style="transform: translate(540px, -3px)">
+        <g pin="4" grid="20" style="transform: translate(1080px, 1125px)">
+          <image x="0" y="0" href="assets/19-4.png"></g>
+        <g pin="5" grid="20" style="transform: translate(1231px, 1125px)">
+          <image x="0" y="0" href="assets/19-5.png"></g>
+        <g pin="6" grid="20" style="transform: translate(1170px, 1111px)">
+          <image x="0" y="0" href="assets/19-6.png"></g>
+        <g pin="7" grid="20" style="transform: translate(1118px, 895px)">
+          <image x="0" y="0" href="assets/19-7.png"></g>
+        <g pin="8" grid="20" style="transform: translate(1250px, 895px)">
+          <image x="0" y="0" href="assets/19-8.png"></g>
+        <g pin="9" grid="20" style="transform: translate(1192px, 902px)">
+          <image x="0" y="0" href="assets/19-9.png"></g>
+        <g pin="10" grid="20" style="transform: translate(1224px, 1071px)">
+          <image x="0" y="0" href="assets/19-10.png"></g>
+        <g pin="11" grid="20" style="transform: translate(1077px, 1071px)">
+          <image x="0" y="0" href="assets/19-11.png"></g>
+        <g pin="12" grid="20" style="transform: translate(1048px, 853px)">
+          <image x="0" y="0" href="assets/19-12.png"></g>
+        <g pin="13" grid="20" style="transform: translate(1018px, 1108px)">
+          <image x="0" y="0" href="assets/19-13.png"></g>
+        <g pin="14" grid="20" style="transform: translate(1030px, 1308px)">
+          <image x="0" y="0" href="assets/19-14.png"></g>
+        <g pin="15" grid="20" style="transform: translate(1311px, 1107px)">
+          <image x="0" y="0" href="assets/19-15.png"></g>
+        <g pin="16" grid="20" style="transform: translate(1335px, 854px)">
+          <image x="0" y="0" href="assets/19-16.png"></g>
+        <g pin="17" grid="20" style="transform: translate(1085px, 832px)">
+          <image x="0" y="0" href="assets/19-17.png"></g>
+      </g>
+      <g pin="21" style="transform: translate(1100px, -5px)">
+        <g pin="4" grid="21" style="transform: translate(1080px, 1125px)">
+          <image x="0" y="0" href="assets/19-4.png"></g>
+        <g pin="5" grid="21" style="transform: translate(1231px, 1125px)">
+          <image x="0" y="0" href="assets/19-5.png"></g>
+        <g pin="6" grid="21" style="transform: translate(1170px, 1111px)">
+          <image x="0" y="0" href="assets/19-6.png"></g>
+        <g pin="7" grid="21" style="transform: translate(1118px, 895px)">
+          <image x="0" y="0" href="assets/19-7.png"></g>
+        <g pin="8" grid="21" style="transform: translate(1250px, 895px)">
+          <image x="0" y="0" href="assets/19-8.png"></g>
+        <g pin="9" grid="21" style="transform: translate(1192px, 902px)">
+          <image x="0" y="0" href="assets/19-9.png"></g>
+        <g pin="10" grid="21" style="transform: translate(1224px, 1071px)">
+          <image x="0" y="0" href="assets/19-10.png"></g>
+        <g pin="11" grid="21" style="transform: translate(1077px, 1071px)">
+          <image x="0" y="0" href="assets/19-11.png"></g>
+        <g pin="12" grid="21" style="transform: translate(1048px, 853px)">
+          <image x="0" y="0" href="assets/19-12.png"></g>
+        <g pin="13" grid="21" style="transform: translate(1018px, 1108px)">
+          <image x="0" y="0" href="assets/19-13.png"></g>
+        <g pin="14" grid="21" style="transform: translate(1030px, 1308px)">
+          <image x="0" y="0" href="assets/19-14.png"></g>
+        <g pin="15" grid="21" style="transform: translate(1311px, 1107px)">
+          <image x="0" y="0" href="assets/19-15.png"></g>
+        <g pin="16" grid="21" style="transform: translate(1335px, 854px)">
+          <image x="0" y="0" href="assets/19-16.png"></g>
+        <g pin="17" grid="21" style="transform: translate(1085px, 832px)">
+          <image x="0" y="0" href="assets/19-17.png"></g>
+      </g>
+      <g pin="22" style="transform: translate(1655px, -7px)">
+        <g pin="4" grid="22" style="transform: translate(1080px, 1125px)">
+          <image x="0" y="0" href="assets/19-4.png"></g>
+        <g pin="5" grid="22" style="transform: translate(1231px, 1125px)">
+          <image x="0" y="0" href="assets/19-5.png"></g>
+        <g pin="6" grid="22" style="transform: translate(1170px, 1111px)">
+          <image x="0" y="0" href="assets/19-6.png"></g>
+        <g pin="7" grid="22" style="transform: translate(1118px, 895px)">
+          <image x="0" y="0" href="assets/19-7.png"></g>
+        <g pin="8" grid="22" style="transform: translate(1250px, 895px)">
+          <image x="0" y="0" href="assets/19-8.png"></g>
+        <g pin="9" grid="22" style="transform: translate(1192px, 902px)">
+          <image x="0" y="0" href="assets/19-9.png"></g>
+        <g pin="10" grid="22" style="transform: translate(1224px, 1071px)">
+          <image x="0" y="0" href="assets/19-10.png"></g>
+        <g pin="11" grid="22" style="transform: translate(1077px, 1071px)">
+          <image x="0" y="0" href="assets/19-11.png"></g>
+        <g pin="12" grid="22" style="transform: translate(1048px, 853px)">
+          <image x="0" y="0" href="assets/19-12.png"></g>
+        <g pin="13" grid="22" style="transform: translate(1018px, 1108px)">
+          <image x="0" y="0" href="assets/19-13.png"></g>
+        <g pin="14" grid="22" style="transform: translate(1030px, 1308px)">
+          <image x="0" y="0" href="assets/19-14.png"></g>
+        <g pin="15" grid="22" style="transform: translate(1311px, 1107px)">
+          <image x="0" y="0" href="assets/19-15.png"></g>
+        <g pin="16" grid="22" style="transform: translate(1335px, 854px)">
+          <image x="0" y="0" href="assets/19-16.png"></g>
+        <g pin="17" grid="22" style="transform: translate(1085px, 832px)">
+          <image x="0" y="0" href="assets/19-17.png"></g>
+      </g>
+      <g pin="23" style="transform: translate(2210px, -10px)">
+        <g pin="2" grid="23" style="transform: translate(1376px, 1197px)">
+          <image x="0" y="0" href="assets/23-2.png"></g>
+        <g pin="3" grid="23" style="transform: translate(1406px, 937px)">
+          <image x="0" y="0" href="assets/23-3.png"></g>
+        <g pin="4" grid="23" style="transform: translate(1080px, 1125px)">
+          <image x="0" y="0" href="assets/19-4.png"></g>
+        <g pin="5" grid="23" style="transform: translate(1231px, 1125px)">
+          <image x="0" y="0" href="assets/19-5.png"></g>
+        <g pin="6" grid="23" style="transform: translate(1170px, 1111px)">
+          <image x="0" y="0" href="assets/19-6.png"></g>
+        <g pin="7" grid="23" style="transform: translate(1118px, 895px)">
+          <image x="0" y="0" href="assets/19-7.png"></g>
+        <g pin="8" grid="23" style="transform: translate(1250px, 895px)">
+          <image x="0" y="0" href="assets/19-8.png"></g>
+        <g pin="9" grid="23" style="transform: translate(1192px, 902px)">
+          <image x="0" y="0" href="assets/19-9.png"></g>
+        <g pin="10" grid="23" style="transform: translate(1224px, 1071px)">
+          <image x="0" y="0" href="assets/19-10.png"></g>
+        <g pin="11" grid="23" style="transform: translate(1077px, 1071px)">
+          <image x="0" y="0" href="assets/19-11.png"></g>
+        <g pin="12" grid="23" style="transform: translate(1048px, 853px)">
+          <image x="0" y="0" href="assets/19-12.png"></g>
+        <g pin="13" grid="23" style="transform: translate(1018px, 1108px)">
+          <image x="0" y="0" href="assets/19-13.png"></g>
+        <g pin="14" grid="23" style="transform: translate(1030px, 1308px)">
+          <image x="0" y="0" href="assets/19-14.png"></g>
+        <g pin="15" grid="23" style="transform: translate(1311px, 1107px)">
+          <image x="0" y="0" href="assets/19-15.png"></g>
+        <g pin="16" grid="23" style="transform: translate(1335px, 854px)">
+          <image x="0" y="0" href="assets/19-16.png"></g>
+        <g pin="17" grid="23" style="transform: translate(1085px, 832px)">
+          <image x="0" y="0" href="assets/19-17.png"></g>
+        
+      </g>
+      <g pin="24" style="transform: translate(2802px, -13px)">
+        <g pin="3" grid="24" style="transform: translate(1366px, 1307px)">
+          <image x="0" y="0" href="assets/24-3.png"></g>
+        <g pin="4" grid="24" style="transform: translate(1080px, 1125px)">
+          <image x="0" y="0" href="assets/19-4.png"></g>
+        <g pin="5" grid="24" style="transform: translate(1231px, 1125px)">
+          <image x="0" y="0" href="assets/19-5.png"></g>
+        <g pin="6" grid="24" style="transform: translate(1170px, 1111px)">
+          <image x="0" y="0" href="assets/19-6.png"></g>
+        <g pin="7" grid="24" style="transform: translate(1118px, 895px)">
+          <image x="0" y="0" href="assets/19-7.png"></g>
+        <g pin="8" grid="24" style="transform: translate(1250px, 895px)">
+          <image x="0" y="0" href="assets/19-8.png"></g>
+        <g pin="9" grid="24" style="transform: translate(1192px, 902px)">
+          <image x="0" y="0" href="assets/19-9.png"></g>
+        <g pin="10" grid="24" style="transform: translate(1224px, 1071px)">
+          <image x="0" y="0" href="assets/19-10.png"></g>
+        <g pin="11" grid="24" style="transform: translate(1077px, 1071px)">
+          <image x="0" y="0" href="assets/19-11.png"></g>
+        <g pin="12" grid="24" style="transform: translate(1048px, 853px)">
+          <image x="0" y="0" href="assets/19-12.png"></g>
+        <g pin="13" grid="24" style="transform: translate(1018px, 1108px)">
+          <image x="0" y="0" href="assets/19-13.png"></g>
+        <g pin="14" grid="24" style="transform: translate(1030px, 1308px)">
+          <image x="0" y="0" href="assets/19-14.png"></g>
+        <g pin="15" grid="24" style="transform: translate(1311px, 1107px)">
+          <image x="0" y="0" href="assets/19-15.png"></g>
+        <g pin="16" grid="24" style="transform: translate(1335px, 854px)">
+          <image x="0" y="0" href="assets/19-16.png"></g>
+        <g pin="17" grid="24" style="transform: translate(1085px, 832px)">
+          <image x="0" y="0" href="assets/19-17.png"></g>
+      </g>
+      <g pin="25" style="transform: translate(3372px, -15px)">
+        <g pin="4" grid="25" style="transform: translate(1080px, 1125px)">
+          <image x="0" y="0" href="assets/19-4.png"></g>
+        <g pin="5" grid="25" style="transform: translate(1231px, 1125px)">
+          <image x="0" y="0" href="assets/19-5.png"></g>
+        <g pin="6" grid="25" style="transform: translate(1170px, 1111px)">
+          <image x="0" y="0" href="assets/19-6.png"></g>
+        <g pin="7" grid="25" style="transform: translate(1118px, 895px)">
+          <image x="0" y="0" href="assets/19-7.png"></g>
+        <g pin="8" grid="25" style="transform: translate(1250px, 895px)">
+          <image x="0" y="0" href="assets/19-8.png"></g>
+        <g pin="9" grid="25" style="transform: translate(1192px, 902px)">
+          <image x="0" y="0" href="assets/19-9.png"></g>
+        <g pin="10" grid="25" style="transform: translate(1224px, 1071px)">
+          <image x="0" y="0" href="assets/19-10.png"></g>
+        <g pin="11" grid="25" style="transform: translate(1077px, 1071px)">
+          <image x="0" y="0" href="assets/19-11.png"></g>
+        <g pin="12" grid="25" style="transform: translate(1048px, 853px)">
+          <image x="0" y="0" href="assets/19-12.png"></g>
+        <g pin="13" grid="25" style="transform: translate(1018px, 1108px)">
+          <image x="0" y="0" href="assets/19-13.png"></g>
+        <g pin="14" grid="25" style="transform: translate(1030px, 1308px)">
+          <image x="0" y="0" href="assets/19-14.png"></g>
+        <g pin="15" grid="25" style="transform: translate(1311px, 1107px)">
+          <image x="0" y="0" href="assets/19-15.png"></g>
+        <g pin="16" grid="25" style="transform: translate(1335px, 854px)">
+          <image x="0" y="0" href="assets/19-16.png"></g>
+        <g pin="17" grid="25" style="transform: translate(1085px, 832px)">
+          <image x="0" y="0" href="assets/19-17.png"></g>
+      </g>
+      <g pin="26" style="transform: translate(3882px, -17px)">
+        <g pin="4" grid="26" style="transform: translate(1080px, 1125px)">
+          <image x="0" y="0" href="assets/19-4.png"></g>
+        <g pin="5" grid="26" style="transform: translate(1231px, 1125px)">
+          <image x="0" y="0" href="assets/19-5.png"></g>
+        <g pin="6" grid="26" style="transform: translate(1170px, 1111px)">
+          <image x="0" y="0" href="assets/19-6.png"></g>
+        <g pin="7" grid="26" style="transform: translate(1118px, 895px)">
+          <image x="0" y="0" href="assets/19-7.png"></g>
+        <g pin="8" grid="26" style="transform: translate(1250px, 895px)">
+          <image x="0" y="0" href="assets/19-8.png"></g>
+        <g pin="9" grid="26" style="transform: translate(1192px, 902px)">
+          <image x="0" y="0" href="assets/19-9.png"></g>
+        <g pin="10" grid="26" style="transform: translate(1224px, 1071px)">
+          <image x="0" y="0" href="assets/19-10.png"></g>
+        <g pin="11" grid="26" style="transform: translate(1077px, 1071px)">
+          <image x="0" y="0" href="assets/19-11.png"></g>
+        <g pin="12" grid="26" style="transform: translate(1048px, 853px)">
+          <image x="0" y="0" href="assets/19-12.png"></g>
+        <g pin="13" grid="26" style="transform: translate(1018px, 1108px)">
+          <image x="0" y="0" href="assets/19-13.png"></g>
+        <g pin="14" grid="26" style="transform: translate(1030px, 1308px)">
+          <image x="0" y="0" href="assets/19-14.png"></g>
+        <g pin="15" grid="26" style="transform: translate(1311px, 1107px)">
+          <image x="0" y="0" href="assets/19-15.png"></g>
+        <g pin="16" grid="26" style="transform: translate(1335px, 854px)">
+          <image x="0" y="0" href="assets/19-16.png"></g>
+        <g pin="17" grid="26" style="transform: translate(1085px, 832px)">
+          <image x="0" y="0" href="assets/19-17.png"></g>
+      </g>
+      <g pin="27">
+
+        <g pin="8" grid="27" style="transform: translate(5509px, 755px)">
+          <image x="0" y="0" href="assets/27-8.png" /></g>
+        <g pin="9" grid="27" style="transform: translate(5517px, 975px)">
+          <image x="0" y="0" href="assets/27-9.png" /></g>
+        <g pin="10" grid="27" style="transform: translate(5515px, 1189px)">
+          <image x="0" y="0" href="assets/27-10.png" /></g>
+        <g pin="11" grid="27" style="transform: translate(5577px, 1534px)">
+          <image x="0" y="0" href="assets/27-11.png" /></g>
+        <g pin="12" grid="27" style="transform: translate(4412px, 1540px)">
+          <image x="0" y="0" href="assets/27-12.png" /></g>
+        <g pin="13" grid="27" style="transform: translate(3169px, 1538px)">
+          <image x="0" y="0" href="assets/27-13.png" class="red" /></g>
+        <g pin="14" grid="27" style="transform: translate(2650px, 1544px)">
+          <image x="0" y="0" href="assets/27-14.png" /></g>
+        <g pin="15" grid="27" style="transform: translate(1964px, 1547px)">
+          <image x="0" y="0" href="assets/27-15.png" /></g>
+        <g pin="16" grid="27" style="transform: translate(1617px, 1543px)">
+          <image x="0" y="0" href="assets/27-16.png" /></g>
+        <g pin="17" grid="27" style="transform: translate(994px, 1557px)">
+          <image x="0" y="0" href="assets/27-17.png" /></g>
+
+      </g>
+      <g pin="28">
+        <g pin="7" grid="28" style="transform: translate(6238px, 446px)">
+          <image x="0" y="0" href="assets/28-7.png" /></g>
+        <g pin="8" grid="28" style="transform: translate(6144px, 642px)">
+          <image x="0" y="0" href="assets/28-8.png" class="red" /></g>
+        <g style="transform: translate(0px, 0px)">
+          <g pin="9" grid="28" style="transform: translate(6190px, 1155px)">
+            <image x="0" y="0" href="assets/28-9.png" /></g>
+          <g pin="10" grid="28" style="transform: translate(6214px, 956px)">
+            <image x="0" y="0" href="assets/28-10.png" /></g>
+          <g pin="11" grid="28" style="transform: translate(6145px, 1090px)">
+            <image x="0" y="0" href="assets/28-11.png" /></g>
+          <g pin="12" grid="28" style="transform: translate(6114px, 960px)">
+            <image x="0" y="0" href="assets/28-12.png" /></g>
+          <g pin="13" grid="28" style="transform: translate(6094px, 1132px)">
+            <image x="0" y="0" href="assets/28-13.png" /></g>
+          <g pin="14" grid="28" style="transform: translate(6095px, 1290px)">
+            <image x="0" y="0" href="assets/28-14.png" /></g>
+          <g pin="15" grid="28" style="transform: translate(6322px, 1132px)">
+            <image x="0" y="0" href="assets/28-15.png" /></g>
+          <g pin="16" grid="28" style="transform: translate(6342px, 900px)">
+            <image x="0" y="0" href="assets/28-16.png" /></g>
+          <g pin="17" grid="28" style="transform: translate(6125px, 895px)">
+            <image x="0" y="0" href="assets/28-17.png" /></g>
+        </g>
+        
+      </g>
+      <g pin="29">
+        <g pin="9" grid="28" style="transform: translate(6235px, 1536px)">
+          <image x="0" y="0" href="assets/29-9.png" /></g>
+        <g pin="10" grid="28" style="transform: translate(6520px, 1346px)">
+          <image x="0" y="0" href="assets/29-10.png" /></g>
+        </g>
+        <g style="transform: translate(495px, 0px)">
+          <g pin="11" grid="29" style="transform: translate(6145px, 1090px)">
+            <image x="0" y="0" href="assets/28-11.png" /></g>
+          <g pin="12" grid="29" style="transform: translate(6114px, 960px)">
+            <image x="0" y="0" href="assets/28-12.png" /></g>
+          <g pin="13" grid="29" style="transform: translate(6094px, 1132px)">
+            <image x="0" y="0" href="assets/28-13.png" /></g>
+          <g pin="14" grid="29" style="transform: translate(6095px, 1290px)">
+            <image x="0" y="0" href="assets/28-14.png" /></g>
+          <g pin="15" grid="29" style="transform: translate(6322px, 1132px)">
+            <image x="0" y="0" href="assets/28-15.png" /></g>
+          <g pin="16" grid="29" style="transform: translate(6342px, 900px)">
+            <image x="0" y="0" href="assets/28-16.png" /></g>
+          <g pin="17" grid="29" style="transform: translate(6125px, 895px)">
+            <image x="0" y="0" href="assets/28-17.png" /></g>
+        </g>
 
     </svg>
+    <div style="margin-left: 0.5em; display: flex; flex-direction: row-reverse; height: 50%">
+      
+      <div>
+        <textarea class="codeblock" autocapitalize="false" autocomplete="false" spellcheck="false" disabled></textarea>
+      </div>
+      <div style="margin-right: auto;">
+        <h2>a quick thrown-together visualizer for CM1564C vfd</h2>
+
+
+        <h3 style="display: flex; gap: 10px;" class="toggle-wrapper">
+          <svg class="toggle" viewBox="0 0 2 1.1" onclick="toggle_button(0)" ja_id="0">
+            <circle cx="0.5" cy="0.5" r="0.5" class="background" />
+            <circle cx="1.5" cy="0.5" r="0.5" class="background" />
+            <rect x="0.5" y="0" width="1" height="1" class="background" />
+            <circle cx="0.5" cy="0.5" r="0.5" class="thumb" />
+          </svg>
+        
+          <span style="transform: translate(0px, 0.25em)">exclude grid numbers from output (for making glyphs)</span>
+        </h3>
+        
+        <h3 style="display: flex; gap: 10px;" class="toggle-wrapper">
+          <svg class="toggle" viewBox="0 0 2 1.1" onclick="toggle_button(1)" ja_id="1">
+            <circle cx="0.5" cy="0.5" r="0.5" class="background" />
+            <circle cx="1.5" cy="0.5" r="0.5" class="background" />
+            <rect x="0.5" y="0" width="1" height="1" class="background" />
+            <circle cx="0.5" cy="0.5" r="0.5" class="thumb" />
+          </svg>
+        
+          <span style="transform: translate(0px, 0.25em)">display mode</span>
+        </h3>
+        <h3 style="display: flex; gap: 10px;" class="toggle-wrapper">
+          <svg class="toggle" viewBox="0 0 2 1.1" onclick="toggle_button(2)" ja_id="2">
+            <circle cx="0.5" cy="0.5" r="0.5" class="background" />
+            <circle cx="1.5" cy="0.5" r="0.5" class="background" />
+            <rect x="0.5" y="0" width="1" height="1" class="background" />
+            <circle cx="0.5" cy="0.5" r="0.5" class="thumb" />
+          </svg>
+        
+          <span style="transform: translate(0px, 0.25em)">live webapp debug</span>
+        </h3>
+
+        <h3 class="button" onclick="generate_addresses()">generate address list</h3>
+        <h3 class="button" onclick="display_addresses()">display address list</h3>
+        
+        <br>
+        <h4>[e] exclude grid numbers<br>[d] display mode<br>[f] display address list<br>[g] generate address list<br>[c] copy to clipboard</h4>
+      
+      
+      </div>
+
+    </div>
+    
+
+
+
+
+    <h3 class="pa"></h3>
+
+
+    <script>
+
+      // document.querySelector("svg").addEventListener('click', (e) => {
+      //   console.log(e)
+
+      //   multiplier = 7893 / document.body.clientWidth;
+      //   // console.log();
+      //   document.querySelector(".pa").innerHTML = `${parseInt(e.x * 0.99106611078 * multiplier)}px, ${parseInt(e.y * 0.99106611078 * multiplier)}px`;
+      // })
+
+      var svg_imgs = document.querySelectorAll("svg image");
+      var gridnums = true;
+      var displaymode = false;
+      var webapp_debug = false;
+      var webapp_interval;
+      var prev_webapp_listing = "";
+
+    
+      function unsecuredCopyToClipboard(text) { const textArea = document.createElement("textarea"); textArea.value=text; document.body.appendChild(textArea); textArea.focus();textArea.select(); try{document.execCommand('copy')}catch(err){console.error('Unable to copy to clipboard',err)}document.body.removeChild(textArea)};
+
+      function copyclip(content) {
+        if (window.isSecureContext && navigator.clipboard) {
+          navigator.clipboard.writeText(content);
+        } else {
+          unsecuredCopyToClipboard(content);
+        }
+      };
+
+      function parseBool(input) {
+        if (input === 'true') {
+          return true
+        } else {
+          return false
+        }
+      }
+
+      for (i in svg_imgs) {
+        if (svg_imgs[i] instanceof Element) {
+          svg_imgs[i].addEventListener('click', (e) => {
+            var target = e.target.parentNode;
+            
+            if (target.classList.contains("active")) {
+            target.classList.remove("active");
+            } else {
+              target.classList.add("active");
+            } 
+
+            generate_addresses();
+          })
+        }
+      }
+    
+      function get_addresses(include_grid=true) {
+
+        var segments_active = document.querySelectorAll("g[pin][grid].active");
+        var addresses_out = [];
+
+
+        for (i in segments_active) {
+          if (segments_active[i] instanceof Element) {
+            var segment_pin = segments_active[i].getAttribute("pin");
+            var segment_grid = segments_active[i].getAttribute("grid");
+
+            if (include_grid == true) {
+              if (gridnums == true) {
+                addresses_out.push(`${segment_grid}:${segment_pin}`);
+              } else {
+                addresses_out.push(parseInt(segment_pin));
+              }
+              
+            } else {
+              addresses_out.push(parseInt(segment_pin));
+            }
+            
+          }
+        }
+
+        addresses_out = [...new Set(addresses_out)]
+
+        console.log(addresses_out);
+        return addresses_out
+      }
+
+      function start_webapp_interval() {
+
+        webapp_interval = setInterval(() => {
+
+
+          fetch("/get_listing", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(
+              {
+                "ja": "ja"
+              })
+          }).then(function (response) {
+            return response.json();
+          }).then(function (text) {
+            // console.log("OG LISTING!!!", text)
+            listing = { ...text };
+            var new_listing = `${JSON.stringify(listing["listing"])}`;
+
+            if (new_listing != prev_webapp_listing) {
+              document.querySelector("textarea").value = new_listing;
+              display_addresses();
+            }
+
+            prev_webapp_listing = new_listing;
+            
+          }).catch(err => {
+            console.error("[POST] API down!", err)
+        
+          });
+
+        }, 250);
+
+
+      }
+      
+
+      function toggle_button(id) {
+        var enabledja = document.querySelector(`.toggle[ja_id="${id}"]`).classList.contains("enabled");
+        if (enabledja == false) {
+          document.querySelector(`.toggle[ja_id="${id}"]`).classList.add("enabled");      // ENABLING
+          if (id == 0) {
+            gridnums = false;
+          } else if (id == 1) {
+            document.querySelector("textarea").removeAttribute("disabled");
+            displaymode = true;
+          } else if (id == 2) {
+            webapp_debug = true;
+            start_webapp_interval();
+          }
+        } else {
+          document.querySelector(`.toggle[ja_id="${id}"]`).classList.remove("enabled");   // DISABLING
+          if (id == 0) {
+            gridnums = true;
+          } else if (id == 1) {
+            document.querySelector("textarea").setAttribute("disabled", "true");
+            displaymode = false;
+          } else if (id == 2) {
+            webapp_debug = false;
+            clearInterval(webapp_interval);
+          }
+        }
+
+        localStorage.setItem("vfd_gridnums", `${gridnums}`);
+        localStorage.setItem("vfd_displaymode", `${displaymode}`);
+        localStorage.setItem("vfd_webapp_debug", `${webapp_debug}`);
+      }
+
+      if (localStorage.getItem("vfd_gridnums")) {
+        gridnums = parseBool(localStorage.getItem("vfd_gridnums"));
+      }
+      if (localStorage.getItem("vfd_displaymode")) {
+        displaymode = parseBool(localStorage.getItem("vfd_displaymode"));
+      }
+      if (localStorage.getItem("vfd_webapp_debug")) {
+        webapp_debug = parseBool(localStorage.getItem("vfd_webapp_debug"));
+      }
+      
+      if (gridnums == false) {
+        toggle_button(0);
+      }
+      if (displaymode == true) {
+        toggle_button(1);
+      }
+      if (webapp_debug == true) {
+        toggle_button(2);
+      }
+
+
+      function generate_addresses() {
+        var addresses = get_addresses();
+
+        document.querySelector("textarea").value = JSON.stringify(addresses);
+      }
+
+      function display_addresses() {
+
+        var already_active = document.querySelectorAll(".active");
+          for (i in already_active) {
+            if (already_active[i] instanceof Element) {
+              already_active[i].classList.remove("active");
+            }
+          }
+          // var already_active = document.querySelectorAll(".active");
+          // for (i in already_active) {
+          //   if (already_active[i] instanceof Element) {
+          //     already_active[i].classList.remove("active");
+          //   }
+          // }
+
+        try {
+          
+          
+
+
+          var list_in = JSON.parse(document.querySelector("textarea").value);
+
+          // ["27:13","27:14"]
+
+          for (i in list_in) {
+
+            var split_tm = list_in[i].split(":");
+
+            var segment = document.querySelector(`g[grid="${split_tm[0]}"][pin="${split_tm[1]}"]`);
+
+            segment.classList.add("active");
+
+          }
+
+        } catch (err) {
+          console.error("ERROR!!!!!")
+          console.error(err);
+        }
+
+      }
+
+
+      document.addEventListener("keydown", (e) => {
+        var which = e.which;
+
+        if (which == 68) {  // d key
+          toggle_button(1);
+        } else if (which == 69) { // e key
+          toggle_button(0);
+        } else if (which == 70) { // f key
+          display_addresses();
+        } else if (which == 71) { // g key
+          generate_addresses();
+        } else if (which == 67) { // c key
+          copyclip(document.querySelector("textarea").value);
+        }
+      })
+
+    </script>
   </body>
 </html>
