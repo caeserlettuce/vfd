@@ -158,7 +158,8 @@ class VFD:
         temp_address_list = self.addresses[:]
 
         for p in pin_list:
-            temp_address_list.remove(p)
+            if p in temp_address_list:
+                temp_address_list.remove(p)
 
         temp_address_list = list(set(temp_address_list))    # make sure there's no duplicated
 
