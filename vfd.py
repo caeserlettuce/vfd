@@ -132,7 +132,7 @@ class VFD:
 
     def getPins(self):
 
-        addresses_return = json.dumps(self.addresses)
+        addresses_return = self.addresses
         return addresses_return
     
     def setPins(self, pin_list, apply=True):
