@@ -93,7 +93,23 @@ class VFD:
 
     def send(self):
         dprint("sending addresses:")
-        dprint(self.addresses)
+
+        out_addresses = {
+            "brightness": self.brightness,
+            "listing": []
+        }
+
+        for i in self.addresses:
+            split_tm = i.split(":")
+            out_addresses["listing"].append([])
+            for e in split_tm:
+                out_addresses["listing"][-1].append(int(e))
+
+
+        # print(json.dumps(out_addresses))
+
+
+        # WEBAPP !!!!!!!!!!!!!!!!!!!!!!!!!!!! BELOW !!!!!!!!!!!!!
 
         try:
 
@@ -109,7 +125,7 @@ class VFD:
                 response_data = response.json()
                 dprint(response_data)
             else:
-                print(f"Error: {response.status_code}")
+                print("Error: {response.status_code}")
 
         except Exception:
             print(Exception)

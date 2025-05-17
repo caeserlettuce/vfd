@@ -1,16 +1,37 @@
 # vfd
 
-a custom library to help drive a vacuum fluorescent display
+a custom python module that talks to a connected microcontroller in order to drive a vacuum fluorescent display
 
-disclaimer: this library doesnt *actually* drive the display, it basically is a middle man between my own python script and the arduino.
+note: originally this repo was just going to have the python module, but i realised how easy it would be to also just include my microcontroller code along with it. especially after trying to figure out how all of this works. so this README is separated into two sections, a python and a c++ section. oh, and a subsection under python for the displays.json and the development webapp.
+
+<br>
+so the python script, as mentioned, is a module that you can import into whatever other script you want to use to control what the display says.
+
+<br>
+
+fair warning, not *everything*  will work directly out of the box. i expect you will have to change values in some of the scripts in order to make things work for your display.
+
+the python module, i have tried to make as dynamic as possible, and will be the least of any issues.
+
+the development webapp is separate from the module functionality, and is just there to help you debug any python-related issues. it's also a tool to help make glyphs for your display. (trust me, it made it 10x faster and i had the whole font done in 10 minutes)
+
+
+<br>
+
+the microcontroller code is written for a teensy 3.2, and the shift register is an HV518. Thank you to MikeDombo for writing [this repo](https://github.com/MikeDombo/HV518_Arduino) which i studied in order to figure out how to actually drive the display. I'm writing this part of the readme before i've actually started writing the final teensy code, so i will try my best to make it as modular as possible.
+
+
+<br>
+please refer to each individual section for limitations and usage (of course)
+
 
 ## todo
 - [ ] actually implement everything below
-- [ ] write a "font" for my vfd's pinout
+- [x] write a "font" for my vfd's pinout
 - [ ] make it connect to an arduino/teensy via serial, then make it so you set that up within the init function
 - [ ] see if it actually works with the display
 
-## use
+## use (python)
 
 ```python
 import vfd
@@ -128,6 +149,8 @@ if your VFD doesn't have grids, that makes things easier. just lie to the progra
 <br><br>
 if your VFD has more pins than just anode, grid, and cathode; good luck! 
 <br>setting the individual pins should work fine, but i'm not sure if the text creation scripts will work. maybe in the future i'll make sure that works.
+
+<br>semi-future me here: i'm not going to actively be adding support for multiple grids, however, i'll try not to make it a pain for anyone else to add support.
 
 <br>
 okay so now to the json file. let's go through the properties:
@@ -294,6 +317,18 @@ the only thing that the javascript cares about is this structure:
 the only value that you should have to edit in the javascript should be `max_brightness` at the top of the `<script>` block.
 
 this number should match whatever you set the max brightness to in `displays.json`
+
+
+## use (c++)
+
+i have yet to write the final code so this section is blank for now
+
+
+
+
+
+
+
 
 
 <br>
