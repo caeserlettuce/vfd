@@ -202,7 +202,7 @@ class VFD:
         out_addresses["listing"] = binary_listing[:]
 
 
-        print(json.dumps(out_addresses))
+        # print(json.dumps(out_addresses))
 
 
 
@@ -211,12 +211,8 @@ class VFD:
             try:
 
                 headers = {'Content-Type': 'application/json'}
-                data = {
-                    "listing": self.addresses,
-                    "brightness": self.brightness
-                }
-
-                response = requests.post(WEBAPP_URL + "/send_listing", data=json.dumps(data), headers=headers)
+                
+                response = requests.post(WEBAPP_URL + "/send_listing", data=json.dumps(out_addresses), headers=headers)
 
                 if response.status_code == 200:
                     response_data = response.json()

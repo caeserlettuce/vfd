@@ -561,16 +561,17 @@
 
     <script>
 
-      // document.querySelector("svg").addEventListener('click', (e) => {
-      //   console.log(e)
+      // param variables
+      var max_brightness = 20;
+      var address_support = [         // literally just copy your display's address_support from displays.json
+        [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+        [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+      ];
 
-      //   multiplier = 7893 / document.body.clientWidth;
-      //   // console.log();
-      //   document.querySelector(".pa").innerHTML = `${parseInt(e.x * 0.99106611078 * multiplier)}px, ${parseInt(e.y * 0.99106611078 * multiplier)}px`;
-      // })
 
-      var max_brightness = 4;
 
+
+      // do not touch variables
       var svg_imgs = document.querySelectorAll("svg image");
       var gridnums = true;
       var displaymode = false;
@@ -579,6 +580,8 @@
       var prev_webapp_listing = "";
       var brightness = max_brightness;
       var prev_brightness = max_brightness;
+
+      var test_json = {"brightness": 4, "listing": [[0, 8, 32, 0], [0, 8, 16, 0], [0, 8, 8, 0], [0, 8, 4, 0], [0, 8, 2, 0], [0, 16, 32, 0], [0, 16, 16, 0], [0, 16, 8, 0], [0, 16, 4, 0], [0, 32, 32, 0], [0, 32, 16, 0], [0, 32, 2, 0], [0, 64, 32, 0], [0, 64, 2, 0], [0, 4, 16, 0], [0, 4, 2, 0], [0, 2, 32, 0], [0, 2, 2, 0], [0, 0, 144, 0]]};
 
     
       function unsecuredCopyToClipboard(text) { const textArea = document.createElement("textarea"); textArea.value=text; document.body.appendChild(textArea); textArea.focus();textArea.select(); try{document.execCommand('copy')}catch(err){console.error('Unable to copy to clipboard',err)}document.body.removeChild(textArea)};
@@ -614,7 +617,55 @@
           })
         }
       }
+
+
+      function pin_support(pin_in) {
+        var place_out = false;
+        var i = 0;
+
+        for (i in address_support) {
+          if (address_support[i].includes(parseInt(pin_in))) {
+            place_out = i;
+          }
+        }
+        return place_out
+      }
     
+      function convert_bytes_to_address(bytes_tm) {
+
+        var binary_listing = [];
+        var out_listing = [];
+
+        for (i in bytes_tm) { // create out_listing
+          binary_listing.push("");
+          for (e in bytes_tm[i]) {
+            var byte = Number(bytes_tm[i][e]).toString(2).padStart(8, '0');
+            binary_listing[i] += `${byte}`;
+          }
+        }
+
+        // console.log(binary_listing);
+        for (i in binary_listing) {  // iter through binary
+          out_listing.push([false, false]);
+          var binary_split = `${binary_listing[i]}`.split("");
+          for (e in binary_split) {
+            if (parseInt(binary_split[e]) == 1) {
+              var add_place = pin_support(parseInt(e) + 1);
+
+              out_listing[i][parseInt(add_place)] = parseInt(e) + 1;
+            }
+          }
+        }
+
+        return out_listing
+      }
+      
+
+
+
+
+
+
       function get_addresses(include_grid=true) {
 
         var segments_active = document.querySelectorAll("g[pin][grid].active");
@@ -665,9 +716,54 @@
             listing = { ...text };
             var new_listing = `${JSON.stringify(listing["listing"])}`;
 
+
+
             if (new_listing != prev_webapp_listing) {
+
+
+              var address_typeof = JSON.parse(new_listing)[0];
+
+              console.log(address_typeof);
+              if (typeof address_typeof == typeof "hi") { // string type
               document.querySelector("textarea").value = new_listing;
-              display_addresses();
+                
+              } else if (typeof address_typeof == typeof ["jaja"]) { // binary type
+                
+                var listing_change = [];
+                new_listing = JSON.parse(new_listing);
+                
+                if (address_typeof.length == address_support.length) {
+                  // regular address
+
+                    
+
+                } else {
+                  // binary length
+                  
+                  new_listing =  convert_bytes_to_address(new_listing);
+                }
+
+                // convert to string listing
+                var i = 0;
+                for (i in new_listing) {
+                  listing_change.push("");
+                  for (e in new_listing[i]) {
+                    if (e != 0) {
+                      listing_change[i] += ":";
+                    }
+                    listing_change[i] += `${new_listing[i][e]}`;
+                  }
+                }
+
+                
+                document.querySelector("textarea").value = `${JSON.stringify(listing_change)}`;
+
+              }
+
+              // console.log("siz", address_size);
+
+
+              display_addresses();  
             }
 
 
