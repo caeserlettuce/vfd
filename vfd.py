@@ -105,30 +105,127 @@ class VFD:
             for e in split_tm:
                 out_addresses["listing"][-1].append(int(e))
 
+        # sort the listing
+        # this is specifically where support for 3-pin addresses will probably most likely be nonexistent
+        listing_og = out_addresses["listing"]
 
-        # print(json.dumps(out_addresses))
+        clump_leads = {}
+        clump_order = []
+        clump_order_out = []
+        clumps = {}
+        listing_sorted = []
+        index = 0
+        
+        # create clump leads
+        for a in listing_og:
+            clump_init = (str(listing_og[index][1]) in clump_leads) # check if anode pin is already defined
+
+            if clump_init == False:
+                clump_leads[str(listing_og[index][1])] = 0  # define it in clump leads
+            
+            clump_leads[str(listing_og[index][1])] += 1 # iterate up 1
+            index += 1
+
+        # figure out clump order
+        for a in clump_leads:
+            clump_order.append(str(clump_leads[a]) + "_" + str(100 - int(a)))
+            
+            # why 100 - int(a)???
+            # i want the clump sizes to be sorted from largest to smallest,
+            # but i want the clump leads to be sorted from smallest to largest.
+            # so i needed an easy and reversible way to make the largest the smallest, and the smallest the largest
+            # so, subtract it from 100.
+        
+        clump_order.sort()
+        clump_order.reverse()
+
+        for a in clump_order:
+            clump_order_out.append(str(100 - int(a.split("_")[1])))
+
+        index = 0
+        # assemble the clumps object
+        for a in clump_order_out:
+            index  = 0
+
+            if a not in clumps:
+                clumps[a] = []
+
+            for y in listing_og:
+                if int(a) in listing_og[index]:
+                    clumps[a].append(listing_og[index][0])
+                index += 1
+            clumps[a].sort()
+
+        # assemble sorted listing
+        for c in clumps:
+
+            for a in clumps[c]:
+                listing_sorted.append([int(a), int(c)])
+            
+        # BYTE TIME!!
+                
+        binary_listing = []
+        init_append = []
+        registers = int(displays[self.model]["outputs"] / 8)
+        for i in range(displays[self.model]["outputs"]):
+            init_append.append("0")
+
+
+        for a in listing_sorted:
+            binary_append = init_append[:]
+            for p in a:
+                binary_append[int(p) - 1] = "1"
+
+            binary_append = "".join(binary_append)
+
+            binary_split = []
+            split_append = ""
+
+            index = 0
+            for char in binary_append:
+                
+                if index % 8 == 0:
+                    if index > 0:
+                        binary_split.append(split_append)
+                    split_append = ""
+                split_append += char
+
+                index += 1
+            binary_split.append(split_append)
+            
+            index = 0
+            for b in binary_split:
+                binary_split[index] = int(binary_split[index], 2)
+                index += 1
+            binary_listing.append(binary_split)
+
+        out_addresses["listing"] = binary_listing[:]
+
+
+        print(json.dumps(out_addresses))
+
 
 
         # WEBAPP !!!!!!!!!!!!!!!!!!!!!!!!!!!! BELOW !!!!!!!!!!!!!
+        if WEBAPP_DEBUG == True:
+            try:
 
-        try:
+                headers = {'Content-Type': 'application/json'}
+                data = {
+                    "listing": self.addresses,
+                    "brightness": self.brightness
+                }
 
-            headers = {'Content-Type': 'application/json'}
-            data = {
-                "listing": self.addresses,
-                "brightness": self.brightness
-            }
+                response = requests.post(WEBAPP_URL + "/send_listing", data=json.dumps(data), headers=headers)
 
-            response = requests.post(WEBAPP_URL + "/send_listing", data=json.dumps(data), headers=headers)
+                if response.status_code == 200:
+                    response_data = response.json()
+                    dprint(response_data)
+                else:
+                    print("Error: {response.status_code}")
 
-            if response.status_code == 200:
-                response_data = response.json()
-                dprint(response_data)
-            else:
-                print("Error: {response.status_code}")
-
-        except Exception:
-            print(Exception)
+            except Exception:
+                print(Exception)
         
         dprint(bc.BOLD + bc.HEADER + "addresses sent!" + bc.END)
 

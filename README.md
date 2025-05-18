@@ -178,6 +178,7 @@ okay so now to the json file. let's go through the properties:
             [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
             [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
         ],
+        "outputs": 32,          // this is how many outputs there are on the shift register(s) that are controlling your vfd. it must be divisible by 8, or things will break.
         "max brightness": 4,    // this number can be pretty much whatever number you want it to be, it basically just determines how many steps there are between minimum and maximum brightness.
         "fonts": {
             // fonts is the fun part. this is both a way you can have different typefaces programmed in,
