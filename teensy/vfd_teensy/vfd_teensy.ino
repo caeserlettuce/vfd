@@ -10,7 +10,9 @@ bool debug_messages = true;
 int chip_outputs = 32;        // how many total outputs on your shift register(s)
 int display_segments = 157;   // how many segments your display has
 float brightness_steps = 20;  // max brightness integer. despite it being a float, don't make it a decimal.
-float pwm_tick_speed = 1;     // ms between pwm ticks. also don't make this a decimal.
+float tick_speed = 0.1;       // ms between ticks
+float pwm_tick_speed = 1;     // ms between pwm ticks.don't make this a decimal.
+float interlace_speed = 10;    // amount of times a segment will be shown before moving on to the next segment
 
 
 
@@ -25,6 +27,13 @@ float brightness_tm = 0;
 int pwm_index = 0;
 float duty = 0;
 float interlaceRatio = 0;
+float interlace_index = 0;
+int data_index = 0;
+int prev_data_index = 0;
+float tpc =  1000 / tick_speed;
+float pwm_tpc = (tpc / tick_speed) / pwm_tick_speed;
+int tick_index = 0;
+float second_speed = 1000;
 
 
 
@@ -44,6 +53,11 @@ void debug(String message) {
 }
 
 
+void send_state(int state_int) {
+
+  // HERE is where it will retreive and send the binary to the shift register
+  
+}
 
 
 
@@ -60,9 +74,13 @@ void loop() {
 //  Serial.println(reset_state);/
 //  Serial.print(1 == true);/
 
+// right now the pwm speed is 1ms
+// say i want the tick speed to be 0.1ms
+// but keep the pwm speed at 1ms
+// 1 "cycle" as im gonna call it is 1 second
 
-  if (reset_state == false) {    
 
+  if (reset_state == false) {
 
     // DISPLAY OFF
     digitalWrite(13, LOW);
@@ -71,11 +89,39 @@ void loop() {
 
       // DISPLAY ON
       digitalWrite(13, HIGH);
-       
+
+      interlace_index += 1;
+      
+      
+      if ( round(interlace_index) % round(interlace_speed) == 0 && reset_state == false) {
+        // jaja data time
+
+//        Serial.print(data_in/dex);
+        
+        data_index += 1;
+        if ( data_index >= doct.size()) {
+          data_index = 0;
+        }
+      }
     }
      
   }
-  pwm_index += 1;
+
+
+                   // dont ask why its divided by tick speed twice because i do not know either  
+  if (tick_index % round( (pwm_tick_speed / tick_speed) / tick_speed) == 0) {   // PWM INDEX
+    pwm_index += 1;
+  }
+  
+  if (tick_index % round( (interlace_speed / tick_speed) / tick_speed) == 0) {  // INTERLACE INDEX
+    interlace_index += 1;
+
+    if (data_index != prev_data_index) {
+      prev_data_index = data_index;
+      send_state(round(data_index));
+    }
+  }
+  
 
 
 
@@ -116,30 +162,38 @@ void loop() {
           }
         }
         pwm_index = 0;
+        interlace_index = 0;
+        data_index = 0;
         reset_state = false;
     
         debug("jaja");
 
         duty = 0;
         if (brightness_tm != 0) {
-          duty = round ((brightness_tm / brightness_steps) * (1000 / pwm_tick_speed) );
+          duty = round ((brightness_tm / brightness_steps) * pwm_tpc );
         }
 
         interlaceRatio = 0;
         if(duty != 0){
-          interlaceRatio = (1000 / pwm_tick_speed) / duty; // the ratio between time that the display is off vs time the display is on
+          interlaceRatio = pwm_tpc / duty; // the ratio between time that the display is off vs time the display is on
         }
+
         
-        Serial.println();
-        Serial.println(duty);
-        Serial.println(interlaceRatio);
+//        Serial.println();
+//        Serial.println(duty);
+//        Serial.println(interlaceRatio);
       }
     }
     
   }
     
-    
-  delay(pwm_tick_speed);
+  tick_index += 1;
+  if (tick_index >= 10000 / tick_speed) {
+    tick_index = 0;
+//    Serial.println("tick index reset!");/
+  }
+  delay(tick_speed);
+  
 
 
 
