@@ -639,12 +639,22 @@
           binary_listing.push("");
           for (e in bytes_tm[i]) {
             var byte = Number(bytes_tm[i][e]).toString(2).padStart(8, '0');
+            console.log(byte);
             binary_listing[i] += `${byte}`;
           }
         }
 
+        for (y in binary_listing) {
+          var bin = binary_listing[y];
+          var bin_out = `${bin}`.split("").reverse().join("");
+          console.log(bin);
+          console.log(bin_out);
+          binary_listing[y] = bin_out
+        }
+
         // console.log(binary_listing);
         for (i in binary_listing) {  // iter through binary
+          
           out_listing.push([false, false]);
           var binary_split = `${binary_listing[i]}`.split("");
           for (e in binary_split) {
