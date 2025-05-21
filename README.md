@@ -28,8 +28,9 @@ please refer to each individual section for limitations and usage (of course)
 ## todo
 - [ ] actually implement everything below
 - [x] write a "font" for my vfd's pinout
-- [ ] make it connect to an arduino/teensy via serial, then make it so you set that up within the init function
-- [ ] see if it actually works with the display
+- [x] make it connect to an arduino/teensy via serial, then make it so you set that up within the init function
+- [x] see if it actually works with the display
+- [ ] fix issues with driving the display
 
 ## use (python)
 

@@ -192,15 +192,16 @@ class VFD:
         for a in listing_sorted:
             binary_append = init_append[:]
             for p in a:
-                binary_append[int(p) - 1] = "1"
+                binary_append[int(p) - 1] = "1"     # setting byte to 1 according to pin number
 
-            binary_append = "".join(binary_append)
+            binary_append.reverse()                 # reversing all bytes (replacement for LSBFIRST on teensy side. makes things simpler if i do it here)
+            binary_append = "".join(binary_append)  # append the list of bytes into one big string
 
             binary_split = []
             split_append = ""
 
             index = 0
-            for char in binary_append:
+            for char in binary_append:              # this for loop splits the string into 8-bit sections
                 
                 if index % 8 == 0:
                     if index > 0:
@@ -212,18 +213,12 @@ class VFD:
             binary_split.append(split_append)
             
             index = 0
-            for b in binary_split:
+            for b in binary_split:                  # this for loop converts the binary bits into integer bits (representing the binary as an int from 0-255)
                 binary_split[index] = int(binary_split[index], 2)
                 index += 1
             binary_listing.append(binary_split)
-        
-        binary_listing_final = []
 
-        for b in binary_listing:
-            b.reverse()
-            binary_listing_final.append(b)
-
-        out_addresses["listing"] = binary_listing_final[:]
+        out_addresses["listing"] = binary_listing[:]
 
         # print(json.dumps(out_addresses))
 
