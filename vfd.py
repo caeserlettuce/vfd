@@ -3,6 +3,7 @@ import sys
 import os
 import unicodedata
 import requests
+import serial
 
 class bc:
     HEADER = '\033[95m'
@@ -18,9 +19,16 @@ class bc:
 script_directory = os.path.dirname(os.path.abspath(__file__))
 
 displays = json.load(open(os.path.join(script_directory, 'displays.json').encode()))
+
+
+
+# param varaibles
 WEBAPP_DEBUG = True         # enable this when webapp debugging
 DEBUG_PRINT = False
 WEBAPP_URL = "http://127.0.0.1:5000"
+SERIAL_SEND = False
+
+
 
 
 def dprint(input):
@@ -82,16 +90,26 @@ def pin_check(pins_in, model_in):
 
 class VFD:
     def __init__(self, settings_in={}):
+        global SERIAL_SEND
         
         if "model" in settings_in:
             self.model = settings_in["model"]
         else:
             raise Exception(bc.BOLD + bc.FAIL + "model must be set!" + bc.END)
         
+        if "serial_port" in settings_in:
+            self.serial_port = settings_in["serial_port"]
+            if (self.serial_port == False):
+                SERIAL_SEND = False
+        
+
         self.addresses = [] # final pin address list
         self.brightness = displays[self.model]["max brightness"]
+        
+        if SERIAL_SEND == True:
+            self.ser = serial.Serial(self.serial_port, 9600, timeout=0.050)
 
-    def send(self):
+    def send(self, return_out=False):
         dprint("sending addresses:")
 
         out_addresses = {
@@ -198,32 +216,52 @@ class VFD:
                 binary_split[index] = int(binary_split[index], 2)
                 index += 1
             binary_listing.append(binary_split)
+        
+        binary_listing_final = []
 
-        out_addresses["listing"] = binary_listing[:]
+        for b in binary_listing:
+            b.reverse()
+            binary_listing_final.append(b)
 
+        out_addresses["listing"] = binary_listing_final[:]
 
         # print(json.dumps(out_addresses))
 
+        # print(data)
+
+        if (return_out == True):
+            return out_addresses
+
+        else:
+
+            if SERIAL_SEND == True:
+
+                data = self.ser.readline().decode('utf-8').strip()
+                self.ser.write(json.dumps(out_addresses).encode("ascii", errors='ignore'))
 
 
-        # WEBAPP !!!!!!!!!!!!!!!!!!!!!!!!!!!! BELOW !!!!!!!!!!!!!
-        if WEBAPP_DEBUG == True:
-            try:
+            
 
-                headers = {'Content-Type': 'application/json'}
-                
-                response = requests.post(WEBAPP_URL + "/send_listing", data=json.dumps(out_addresses), headers=headers)
 
-                if response.status_code == 200:
-                    response_data = response.json()
-                    dprint(response_data)
-                else:
-                    print("Error: {response.status_code}")
 
-            except Exception:
-                print(Exception)
-        
-        dprint(bc.BOLD + bc.HEADER + "addresses sent!" + bc.END)
+            # WEBAPP !!!!!!!!!!!!!!!!!!!!!!!!!!!! BELOW !!!!!!!!!!!!!
+            if WEBAPP_DEBUG == True:
+                try:
+
+                    headers = {'Content-Type': 'application/json'}
+                    
+                    response = requests.post(WEBAPP_URL + "/send_listing", data=json.dumps(out_addresses), headers=headers)
+
+                    if response.status_code == 200:
+                        response_data = response.json()
+                        dprint(response_data)
+                    else:
+                        print("Error: {response.status_code}")
+
+                except Exception:
+                    print(Exception)
+            
+            dprint(bc.BOLD + bc.HEADER + "addresses sent!" + bc.END)
 
     def clear(self):
         self.addresses = []
