@@ -10,7 +10,7 @@ bool debug_messages = true;
 int chip_outputs = 32;        // how many total outputs on your shift register(s)
 int display_segments = 157;   // how many segments your display has
 float brightness_steps = 20;  // max brightness integer. despite it being a float, don't make it a decimal.
-float tick_speed = 0.5;      // ms between ticks
+float tick_speed = 1;      // ms between ticks
 float interlace_speed = 1;    // amount of times a segment will be shown before moving on to the next segment
 
 
@@ -25,7 +25,8 @@ JsonArray addresses = doct.as<JsonArray>(); // json element
 bool reset_state = true;
 float brightness_tm = 0;
 int tick_index = 0;
-int interlace_index = 0;
+int data_index = 0;
+int prev_data_index = -1;
 
 
 
@@ -49,7 +50,7 @@ void setup() {
 
 
   Serial.begin(9600);
-  
+
 
   pinMode(13, OUTPUT);
   pinMode(2, INPUT);
@@ -60,7 +61,7 @@ void setup() {
   pinMode(latch_pin, OUTPUT);
   pinMode(strobe_pin, OUTPUT);
 
-  
+
   digitalWrite(vpp_pin, LOW); // set vpp relay low
   digitalWrite(vdd_pin, LOW); // set vdd relay low
 
@@ -68,7 +69,7 @@ void setup() {
 
 void debug(String message) {
   if (debug_messages == true) {
-    Serial.print("\n DBG: " + message);  
+    Serial.print("\n DBG: " + message);
   }
 }
 
@@ -77,31 +78,26 @@ void send_state(int state_int) {
 
   // HERE is where it will retreive and send the binary to the shift register
 
-  int state_size = doct[state_int].size();
+  int state_size = doct["listing"][state_int].size();
+
+//  Serial.print(state_int);
+//  serializeJson(doct[state_int], Serial);
 
   for (int i = 0; i < state_size; ++i) {    // for all addresses in address listing
 
-    shiftOut(data_pin, clock_pin, MSBFIRST, doct[state_int][i]);
+    shiftOut(data_pin, clock_pin, MSBFIRST, doct["listing"][state_int][i]);
 
   }
-      
+
   digitalWrite(latch_pin, HIGH);
   digitalWrite(latch_pin, LOW);
+  digitalWrite(strobe_pin, LOW);
 }
 
 
 
 void loop() {
   // put your main code here, to run repeatedly:
-//Serial.print("yo");/
-
-//  Serial.println(reset_state);/
-//  Serial.print(1 == true);/
-
-// right now the pwm speed is 1ms
-// say i want the tick speed to be 0.1ms
-// but keep the pwm speed at 1ms
-// 1 "cycle" as im gonna call it is 1 second
 
   button_state = digitalRead(2);  // read power button state
 
@@ -118,7 +114,7 @@ void loop() {
 
         Serial.println("vdd relay on");
         digitalWrite(vdd_pin, HIGH);  // vet vdd relay
-        
+
         vdd_relay = true;
       }
 
@@ -132,7 +128,7 @@ void loop() {
         digitalWrite(latch_pin, HIGH);
         digitalWrite(latch_pin, LOW);
         digitalWrite(strobe_pin, LOW);
-        
+
         Serial.println("inputs set!");
         inputs_set = false;
       }
@@ -147,9 +143,9 @@ void loop() {
       }
 
       chip_power = true;
-      
+
     }
-    
+
   } else {
     // power OFF
 
@@ -172,7 +168,7 @@ void loop() {
         digitalWrite(clock_pin, LOW);
         digitalWrite(latch_pin, LOW);
         digitalWrite(strobe_pin, LOW);
-        
+
         Serial.println("inputs set!");
         inputs_set = false;
       }
@@ -180,37 +176,40 @@ void loop() {
       if (vpp_relay == true) {
 
         digitalWrite(vpp_pin, LOW);  // vet vpp relay
-        
+
         Serial.println("vpp relay off");
 
         vpp_relay = false;
       }
-      
+
     }
-  
+
   }
 
   prev_button_state = button_state;
 
 
-  
 
 
-  // index stuff
+  if (chip_power == true) {
 
-  
-  if (tick_index % round((interlace_speed / tick_speed)) == 0) { // for interlace speed
+    if (tick_index % round((interlace_speed / tick_speed)) == 0) { // interlace tick
 
-    Serial.println("benson");
-    
+//      Serial.println(tick_index);/
+
+
+      send_state(data_index);
+
+      prev_data_index = data_index * 1;
+      data_index += 1;
+
+      if ( data_index >= doct["listing"].size()) {
+        data_index = 0;
+      }
+    }
+
   }
 
-
-  if (tick_index % 4 == 0) {
-
-    Serial.println("bello ppoy banana");
-    
-  }
 
 
 
@@ -226,40 +225,42 @@ void loop() {
       String input = read_string;
       deserializeJson(doc, input);
       JsonObject obj = doc.as<JsonObject>(); // json element
-       
-      bool contains_brightness = obj.containsKey("brightness");
-      bool contains_listing = obj.containsKey("listing");
+
+      doct.set(doc);
+
+//      serializeJson(doct, Serial);/
+      
+      bool contains_brightness = doct.containsKey("brightness");
+      bool contains_listing = doct.containsKey("listing");
 
       if (contains_brightness == true and contains_listing == true) {
-        brightness_tm = obj["brightness"].as<float>();
-            
-        int size = obj["listing"].size();
+        brightness_tm = doct["brightness"].as<float>();
+
+        int size = doct["listing"].size();
 
         // INPUT CONFIRMED, RUN ONCE STUFF HAPPENS HERE!
-// 
-        doct.clear();
-  
-        for (int i = 0; i < size; ++i) {    // for all addresses in address listing
-          int size_two = obj["listing"][i].size();
-          addresses.createNestedArray();
-          for (int e = 0; e < size_two; ++e) {    // for all bytes in address listing
-            doct[i].add(obj["listing"][i][e]);
-          }
-        }
+
+        prev_data_index = -1;
+        data_index = 0;
+        tick_index = 0;
         
-        interlace_index = 0;
-        reset_state = false;
-    
-        debug("teensy status");
-      
+//        digitalWrite(strobe_pin, HIGH);/
+
+//        debug("teensy status");
+
       }
     }
-    
+
   }
 
   tick_index += 1;
+  if (tick_index >= 10000 / tick_speed) {
+//  Serial.print("tick index reset!");/
+  tick_index = 0;
+    
+  }
   delay(tick_speed);
-  
+
 
 
 
@@ -267,5 +268,5 @@ void loop() {
     // clear it up!
     doct.garbageCollect();
   }
-  
+
 }

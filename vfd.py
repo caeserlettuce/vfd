@@ -26,7 +26,7 @@ displays = json.load(open(os.path.join(script_directory, 'displays.json').encode
 WEBAPP_DEBUG = True         # enable this when webapp debugging
 DEBUG_PRINT = False
 WEBAPP_URL = "http://127.0.0.1:5000"
-SERIAL_SEND = False
+SERIAL_SEND = True
 
 
 
@@ -105,6 +105,7 @@ class VFD:
 
         self.addresses = [] # final pin address list
         self.brightness = displays[self.model]["max brightness"]
+        self.prev_sent = "{}"
         
         if SERIAL_SEND == True:
             self.ser = serial.Serial(self.serial_port, 9600, timeout=0.050)
@@ -174,13 +175,7 @@ class VFD:
                 index += 1
             clumps[a].sort()
 
-        # assemble sorted listing
-        for c in clumps:
-
-            for a in clumps[c]:
-                listing_sorted.append([int(a), int(c)])
-            
-        # BYTE TIME!!
+        # print(clumps)
                 
         binary_listing = []
         init_append = []
@@ -188,11 +183,17 @@ class VFD:
         for i in range(displays[self.model]["outputs"]):
             init_append.append("0")
 
-
-        for a in listing_sorted:
+        for a in clumps:
             binary_append = init_append[:]
-            for p in a:
-                binary_append[int(p) - 1] = "1"     # setting byte to 1 according to pin number
+
+            binary_append[int(a) - 1] = "1"
+
+            # print(init_append)
+            
+            # print(clumps[a])
+            for p in clumps[a]:
+                # print(p)
+                binary_append[int(p) - 1] = "1"       # setting byte to 1 according to pin number
 
             binary_append.reverse()                 # reversing all bytes (replacement for LSBFIRST on teensy side. makes things simpler if i do it here)
             binary_append = "".join(binary_append)  # append the list of bytes into one big string
@@ -232,7 +233,16 @@ class VFD:
             if SERIAL_SEND == True:
 
                 data = self.ser.readline().decode('utf-8').strip()
-                self.ser.write(json.dumps(out_addresses).encode("ascii", errors='ignore'))
+                # print("yaya")
+                if (data != ""):
+                    print(data)
+                
+                out_dumps = json.dumps(out_addresses)
+
+                if out_dumps != self.prev_sent:
+                    self.ser.write(json.dumps(out_addresses).encode("ascii", errors='ignore'))
+                
+                self.prev_sent = out_dumps
 
 
             

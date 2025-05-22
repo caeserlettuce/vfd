@@ -33,14 +33,22 @@ display.clear()
 
 # display.setPins(["18:5","18:6","18:7","18:8","18:9","18:10","18:11","18:12","18:13","18:14","18:15","18:16","18:17"])
 
-display.setPins(["23:10","23:11","23:12","23:16","23:17"])
+# display.setPins(["23:10","23:11","23:12","23:16","23:17"])
+display.setPins(["22:13","23:13","24:13"])
 
 # print(str(pins).replace("'", '"'))
 
-jaja = display.send(True)
+jaja = display.send()
 
 print(jaja)
 
+
+
+text = display.verifyText("hello")
+pins = display.setText(text, False)
+display.setPins(pins)
+
+display.send()
 
 # vfd.scrollText("hello world", 8)
 
