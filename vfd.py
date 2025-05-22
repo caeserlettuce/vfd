@@ -106,6 +106,7 @@ class VFD:
         self.addresses = [] # final pin address list
         self.brightness = displays[self.model]["max brightness"]
         self.prev_sent = "{}"
+        self.extra_data = {}
         
         if SERIAL_SEND == True:
             self.ser = serial.Serial(self.serial_port, 9600, timeout=0.050)
@@ -115,7 +116,8 @@ class VFD:
 
         out_addresses = {
             "brightness": self.brightness,
-            "listing": []
+            "listing": [],
+            "external data": self.extra_data
         }
 
         for i in self.addresses:
@@ -453,6 +455,12 @@ class VFD:
         
         return address_list_out
 
+    def external_data(self, data_in):
+        for key in data_in:
+            self.extra_data[key] = data_in[key]
+    
+    def get_external_data(self):    
+        return self.extra_data
 
 def scrollText(text, length):
 

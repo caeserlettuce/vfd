@@ -43,6 +43,7 @@ int data_pin = 5;
 int clock_pin = 6;
 int latch_pin = 7;
 int strobe_pin = 8;
+int led_pin = 9;
 
 
 void setup() {
@@ -60,10 +61,13 @@ void setup() {
   pinMode(clock_pin, OUTPUT);
   pinMode(latch_pin, OUTPUT);
   pinMode(strobe_pin, OUTPUT);
+  pinMode(led_pin, OUTPUT);
 
 
   digitalWrite(vpp_pin, LOW); // set vpp relay low
   digitalWrite(vdd_pin, LOW); // set vdd relay low
+  
+  digitalWrite(led_pin, LOW);
 
 }
 
@@ -232,6 +236,7 @@ void loop() {
       
       bool contains_brightness = doct.containsKey("brightness");
       bool contains_listing = doct.containsKey("listing");
+      bool contains_led = doct["external data"].containsKey("led");
 
       if (contains_brightness == true and contains_listing == true) {
         brightness_tm = doct["brightness"].as<float>();
@@ -243,6 +248,16 @@ void loop() {
         prev_data_index = -1;
         data_index = 0;
         tick_index = 0;
+
+        if (contains_led == true) {
+
+          if (doct["external data"]["led"] == true) {
+            digitalWrite(led_pin, HIGH);
+          } else {
+            digitalWrite(led_pin, LOW);
+          }
+          
+        }
         
 //        digitalWrite(strobe_pin, HIGH);/
 
