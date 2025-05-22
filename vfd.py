@@ -23,7 +23,7 @@ displays = json.load(open(os.path.join(script_directory, 'displays.json').encode
 
 
 # param varaibles
-WEBAPP_DEBUG = True         # enable this when webapp debugging
+WEBAPP_DEBUG = False         # enable this when webapp debugging
 DEBUG_PRINT = False
 WEBAPP_URL = "http://127.0.0.1:5000"
 SERIAL_SEND = True
@@ -355,7 +355,6 @@ class VFD:
         glyphs = displays[self.model]["fonts"][font_in]["glyphs"]
         replacements = displays[self.model]["fonts"][font_in]["replacements"]
 
-
         if displays[self.model]["fonts"][font_in]["caps"] == True:
             text_in = text_in.upper()
 
@@ -381,28 +380,30 @@ class VFD:
                     text_split[index] = "unknown"
                 else:
                     text_split[index] = text_flat_split[index]      # for unicode characters like éàçüö, they will be flattened down to eacuo. basically better legibility
+                    l = text_flat_split[index]
             
             # grid check
-            
-            if grid_index < font_length:
-                add_grid = grids[grid_index]
-                glyph_good = True
-                for a in glyphs[l]:
-                    if str(add_grid) in displays[self.model]["fonts"][font_in]["missing"]:
-                        if int(a) in displays[self.model]["fonts"][font_in]["missing"][str(add_grid)]:
-                            glyph_good = False
-                            dprint("glyph " + l + " on grid " + str(add_grid) + " is not good!")
+                    
+            if (text_split[index] != "unknown"):
+                if grid_index < font_length:
+                    add_grid = grids[grid_index]
+                    glyph_good = True
+                    for a in glyphs[l]:
+                        if str(add_grid) in displays[self.model]["fonts"][font_in]["missing"]:
+                            if int(a) in displays[self.model]["fonts"][font_in]["missing"][str(add_grid)]:
+                                glyph_good = False
+                                dprint("glyph " + l + " on grid " + str(add_grid) + " is not good!")
 
-                if glyph_good == False:
-                    text_split[index] = "unknown"
+                    if glyph_good == False:
+                        text_split[index] = "unknown"
+                    else:
+                        grid_index += 1
                 else:
-                    grid_index += 1
-            else:
-                if len(displays[self.model]["fonts"][font_in]["missing"]) > 0:
-                    text_split[index] = "unknown"
-                    if scroll_warned == False:
-                        print(bc.WARNING + "[verifyText]" + bc.BOLD + bc.FAIL + " scrolling is not supported on grid fonts with missing segments." + bc.END)
-                        scroll_warned = True
+                    if len(displays[self.model]["fonts"][font_in]["missing"]) > 0:
+                        text_split[index] = "unknown"
+                        if scroll_warned == False:
+                            print(bc.WARNING + "[verifyText]" + bc.BOLD + bc.FAIL + " scrolling is not supported on grid fonts with missing segments." + bc.END)
+                            scroll_warned = True
 
 
             index += 1

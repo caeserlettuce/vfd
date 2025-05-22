@@ -9,7 +9,10 @@
         "fonts": {
             "default": {
                 "grids": [19, 20, 21, 22, 23, 24, 25, 26],
-                "replacements": {},
+                "replacements": {
+                    "\\xe2\\x80\\x8e\\xe2\\x80\\x93": "-",
+                    "\\xc3\\xb6": "ö"
+                },
                 "missing": {},
                 "caps": false,
                 "glyphs": {
